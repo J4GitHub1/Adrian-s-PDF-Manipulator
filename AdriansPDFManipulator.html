@@ -237,7 +237,7 @@
         <div class="section">
             <div class="section-title">Search Terms</div>
             <label>Enter search terms (comma-separated):</label>
-            <input type="text" id="searchTerms" placeholder="e.g., invoice, receipt, 2024">
+            <input type="text" id="searchTerms" placeholder="search terms...">
         </div>
 
         <div class="section">
@@ -364,10 +364,11 @@
                         `Processing ${file.name} (${fileIdx + 1}/${selectedFiles.length})...`
                     );
 
-                    const arrayBuffer = await file.arrayBuffer();
+                    // Read file buffer for PDF.js (for text extraction)
+                    const arrayBufferForPdfJs = await file.arrayBuffer();
 
                     // Load with PDF.js to extract text
-                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBufferForPdfJs }).promise;
                     const numPages = pdfDoc.numPages;
 
                     // Find matching pages
@@ -418,8 +419,11 @@
                     totalMatched += matchingPages.size;
                     totalOutput += expandedPages.size;
 
+                    // Read file buffer again for pdf-lib (to avoid detached buffer)
+                    const arrayBufferForPdfLib = await file.arrayBuffer();
+
                     // Load with pdf-lib to copy pages
-                    const srcPdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                    const srcPdf = await PDFLib.PDFDocument.load(arrayBufferForPdfLib);
                     const pageIndices = Array.from(expandedPages).sort((a, b) => a - b);
                     const copiedPages = await mergedPdf.copyPages(srcPdf, pageIndices);
                     copiedPages.forEach(page => mergedPdf.addPage(page));
