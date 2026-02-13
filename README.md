@@ -20,9 +20,11 @@ A GUI application for extracting pages from PDF files based on search terms.
 Download the `.exe` from the [Releases](../../releases) page. No installation needed!
 
 ### macOS
-Download the `.app` from the [Releases](../../releases) page, then:
-1. Right-click the app → "Open"
-2. Click "Open" in the security dialog
+Download the `.app` from the [Releases](../../releases) page.
+
+**⚠️ Important**: macOS will block unsigned apps. See [MACOS_INSTALL.md](MACOS_INSTALL.md) for detailed installation instructions.
+
+**Quick start**: Right-click the app → "Open" → Click "Open" in the dialog.
 
 Or see [README_MAC_BUILD.md](README_MAC_BUILD.md) to build from source.
 
