@@ -2,8 +2,8 @@
 
 ## Download
 1. Go to [Releases](https://github.com/J4GitHub1/Adrian-s-PDF-Manipulator/releases)
-2. Download **`AdriansPDFManipulator.app`** from the latest release
-3. Extract the zip if needed
+2. Download **`AdriansPDFManipulator-macOS.zip`** from the latest release
+3. Double-click the zip to extract `AdriansPDFManipulator.app`
 
 ## Installation
 Drag `AdriansPDFManipulator.app` to your **Applications** folder (optional).
