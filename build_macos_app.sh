@@ -26,6 +26,13 @@ pyinstaller AdriansPDFManipulator_macOS.spec
 # Check if build was successful
 if [ -d "dist/AdriansPDFManipulator.app" ]; then
     echo "✓ Build successful!"
+
+    # Ad-hoc sign the app to allow right-click → Open to work
+    echo "Signing app..."
+    codesign --force --deep --sign - dist/AdriansPDFManipulator.app
+    codesign --verify --verbose dist/AdriansPDFManipulator.app
+
+    echo "✓ App signed!"
     echo "Application location: dist/AdriansPDFManipulator.app"
     echo ""
     echo "Your Mac friends can now drag this .app to their Applications folder!"
