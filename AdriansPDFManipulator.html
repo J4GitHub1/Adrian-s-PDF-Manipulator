@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adrian's PDF Manipulator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 650px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .file-button:hover {
+            background: #5568d3;
+        }
+
+        .file-display {
+            flex: 1;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 13px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-label, .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .number-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .number-input input {
+            width: 80px;
+        }
+
+        .extract-button {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .extract-button:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .extract-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+
+        .copyright {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adrian's PDF Manipulator</h1>
+
+        <div id="message"></div>
+
+        <div class="section">
+            <div class="section-title">Input PDF(s)</div>
+            <div class="file-input-wrapper">
+                <label for="pdfFiles" class="file-button">Browse...</label>
+                <input type="file" id="pdfFiles" accept=".pdf" multiple>
+                <div class="file-display" id="fileDisplay">No files selected.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Search Terms</div>
+            <label>Enter search terms (comma-separated):</label>
+            <input type="text" id="searchTerms" placeholder="e.g., invoice, receipt, 2024">
+        </div>
+
+        <div class="section">
+            <div class="section-title">Search Options</div>
+
+            <label>Match logic:</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="matchLogic" value="OR" checked>
+                    ANY term (OR)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="matchLogic" value="AND">
+                    ALL terms (AND)
+                </label>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="caseSensitive">
+                    Case sensitive
+                </label>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <label>Page buffer (± pages around each match):</label>
+                <div class="number-input">
+                    <input type="number" id="pageBuffer" value="0" min="0" max="50">
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <label>Always keep first N pages:</label>
+                <div class="number-input">
+                    <input type="number" id="keepFirst" value="0" min="0" max="500">
+                </div>
+            </div>
+        </div>
+
+        <button class="extract-button" id="extractBtn" onclick="extractPages()">
+            Extract Matching Pages
+        </button>
+
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="status-text" id="statusText">Ready.</div>
+        </div>
+
+        <div class="copyright">© Adrian Brozek</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+        let selectedFiles = [];
+
+        document.getElementById('pdfFiles').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            const display = document.getElementById('fileDisplay');
+            if (selectedFiles.length === 1) {
+                display.textContent = selectedFiles[0].name;
+            } else if (selectedFiles.length > 1) {
+                display.textContent = `${selectedFiles.length} files selected`;
+            } else {
+                display.textContent = 'No files selected.';
+            }
+        });
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.className = type;
+            msgDiv.textContent = text;
+            if (type === 'success') {
+                setTimeout(() => msgDiv.textContent = '', 5000);
+            }
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('statusText').textContent = text;
+        }
+
+        async function extractPages() {
+            const extractBtn = document.getElementById('extractBtn');
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = '';
+
+            // Validate inputs
+            if (selectedFiles.length === 0) {
+                showMessage('Please select one or more PDF files.', 'error');
+                return;
+            }
+
+            const searchTermsInput = document.getElementById('searchTerms').value.trim();
+            if (!searchTermsInput) {
+                showMessage('Please enter at least one search term.', 'error');
+                return;
+            }
+
+            const searchTerms = searchTermsInput.split(',').map(t => t.trim()).filter(t => t);
+            const matchLogic = document.querySelector('input[name="matchLogic"]:checked').value;
+            const caseSensitive = document.getElementById('caseSensitive').checked;
+            const pageBuffer = parseInt(document.getElementById('pageBuffer').value) || 0;
+            const keepFirst = parseInt(document.getElementById('keepFirst').value) || 0;
+
+            extractBtn.disabled = true;
+            updateProgress(0, 'Starting...');
+
+            try {
+                const mergedPdf = await PDFLib.PDFDocument.create();
+                let totalMatched = 0;
+                let totalOutput = 0;
+
+                for (let fileIdx = 0; fileIdx < selectedFiles.length; fileIdx++) {
+                    const file = selectedFiles[fileIdx];
+                    updateProgress(
+                        (fileIdx / selectedFiles.length) * 100,
+                        `Processing ${file.name} (${fileIdx + 1}/${selectedFiles.length})...`
+                    );
+
+                    const arrayBuffer = await file.arrayBuffer();
+
+                    // Load with PDF.js to extract text
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    const numPages = pdfDoc.numPages;
+
+                    // Find matching pages
+                    const matchingPages = new Set();
+                    for (let i = 1; i <= numPages; i++) {
+                        const page = await pdfDoc.getPage(i);
+                        const textContent = await page.getTextContent();
+                        let text = textContent.items.map(item => item.str).join(' ');
+
+                        if (!caseSensitive) {
+                            text = text.toLowerCase();
+                        }
+
+                        const terms = caseSensitive ? searchTerms : searchTerms.map(t => t.toLowerCase());
+
+                        let matches = false;
+                        if (matchLogic === 'AND') {
+                            matches = terms.every(term => text.includes(term));
+                        } else {
+                            matches = terms.some(term => text.includes(term));
+                        }
+
+                        if (matches) {
+                            matchingPages.add(i - 1); // Convert to 0-based
+                        }
+                    }
+
+                    // Expand with buffer
+                    const expandedPages = new Set();
+                    for (const pageIdx of matchingPages) {
+                        for (let offset = -pageBuffer; offset <= pageBuffer; offset++) {
+                            const candidate = pageIdx + offset;
+                            if (candidate >= 0 && candidate < numPages) {
+                                expandedPages.add(candidate);
+                            }
+                        }
+                    }
+
+                    // Add first N pages
+                    for (let i = 0; i < Math.min(keepFirst, numPages); i++) {
+                        expandedPages.add(i);
+                    }
+
+                    if (expandedPages.size === 0) {
+                        continue;
+                    }
+
+                    totalMatched += matchingPages.size;
+                    totalOutput += expandedPages.size;
+
+                    // Load with pdf-lib to copy pages
+                    const srcPdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                    const pageIndices = Array.from(expandedPages).sort((a, b) => a - b);
+                    const copiedPages = await mergedPdf.copyPages(srcPdf, pageIndices);
+                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                }
+
+                if (totalOutput === 0) {
+                    showMessage('No pages matched your search terms in any file.', 'error');
+                    updateProgress(0, 'No matches found.');
+                    extractBtn.disabled = false;
+                    return;
+                }
+
+                updateProgress(100, 'Creating output PDF...');
+
+                // Save and download
+                const pdfBytes = await mergedPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = selectedFiles.length === 1
+                    ? selectedFiles[0].name.replace('.pdf', '_filtered.pdf')
+                    : 'merged_filtered.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showMessage(
+                    `Success! ${totalMatched} page(s) matched. Saved ${totalOutput} page(s) (including ±${pageBuffer} buffer).`,
+                    'success'
+                );
+                updateProgress(100, 'Complete!');
+
+            } catch (error) {
+                console.error(error);
+                showMessage('Error processing PDFs: ' + error.message, 'error');
+                updateProgress(0, 'Error occurred.');
+            } finally {
+                extractBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

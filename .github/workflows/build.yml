@@ -74,6 +74,9 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Download all artifacts
       uses: actions/download-artifact@v4
       with:
@@ -84,13 +87,18 @@ jobs:
       with:
         files: |
           artifacts/**/*
+          AdriansPDFManipulator.html
         body: |
           ## Downloads
+
+          ### 🌐 Web Version (Easiest - Works Everywhere!)
+          - **All Platforms**: Download `AdriansPDFManipulator.html`, double-click to open in browser
+          - ✅ No installation, no security warnings, works on Windows/Mac/Linux
+
+          ### 💻 Native Apps
           - **Windows**: Download `AdriansPDFManipulator.exe` and run
-          - **macOS**: Download `AdriansPDFManipulator-macOS.zip`, extract, then **right-click → Open** (don't double-click!)
+          - **macOS**: Download `AdriansPDFManipulator-macOS.zip`, extract, then **right-click → Open** (not double-click!)
 
           See [README](https://github.com/${{ github.repository }}) for detailed instructions.
-
-          macOS users: See [MACOS_INSTALL.md](https://github.com/${{ github.repository }}/blob/main/MACOS_INSTALL.md) for installation help.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

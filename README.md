@@ -16,15 +16,25 @@ A GUI application for extracting pages from PDF files based on search terms.
 
 ## Installation
 
-### Windows
+### 🌐 **Web Version (Easiest - Works Everywhere!)**
+Download `AdriansPDFManipulator.html` from the [Releases](../../releases) page, then:
+1. Double-click the HTML file
+2. It opens in your browser
+3. Done! No installation, no security warnings
+
+**✅ Works on Windows, Mac, Linux - Zero installation required**
+
+### 💻 Windows
 Download the `.exe` from the [Releases](../../releases) page. No installation needed!
 
-### macOS
+### 🍎 macOS
 Download the `.app` from the [Releases](../../releases) page.
 
 **⚠️ Important**: macOS will block unsigned apps. See [MACOS_INSTALL.md](MACOS_INSTALL.md) for detailed installation instructions.
 
 **Quick start**: Right-click the app → "Open" → Click "Open" in the dialog.
+
+**Easier alternative**: Use the web version above (zero hassle!)
 
 Or see [README_MAC_BUILD.md](README_MAC_BUILD.md) to build from source.
 
