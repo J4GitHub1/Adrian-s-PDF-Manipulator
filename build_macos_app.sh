@@ -21,16 +21,12 @@ pip install -r requirements.txt
 
 # Build the application as a .app bundle
 echo "Building .app bundle..."
-pyinstaller --onefile \
-    --windowed \
-    --name "Adrian's PDF Manipulator" \
-    --icon=icon.icns \
-    AdriansPDFManipulator.py
+pyinstaller AdriansPDFManipulator_macOS.spec
 
 # Check if build was successful
-if [ -d "dist/Adrian's PDF Manipulator.app" ]; then
+if [ -d "dist/AdriansPDFManipulator.app" ]; then
     echo "✓ Build successful!"
-    echo "Application location: dist/Adrian's PDF Manipulator.app"
+    echo "Application location: dist/AdriansPDFManipulator.app"
     echo ""
     echo "Your Mac friends can now drag this .app to their Applications folder!"
 else

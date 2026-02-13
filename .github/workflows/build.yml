@@ -16,7 +16,7 @@ jobs:
             output_name: AdriansPDFManipulator.exe
             artifact_name: AdriansPDFManipulator-Windows
           - os: macos-latest
-            output_name: Adrian's PDF Manipulator.app
+            output_name: AdriansPDFManipulator.app
             artifact_name: AdriansPDFManipulator-macOS
 
     runs-on: ${{ matrix.os }}
@@ -43,7 +43,7 @@ jobs:
     - name: Build macOS app bundle
       if: matrix.os == 'macos-latest'
       run: |
-        pyinstaller --onefile --windowed --name "Adrian's PDF Manipulator" AdriansPDFManipulator.py
+        pyinstaller AdriansPDFManipulator_macOS.spec
 
     - name: Upload Windows artifact
       if: matrix.os == 'windows-latest'
@@ -57,7 +57,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
-        path: dist/Adrian's PDF Manipulator.app
+        path: dist/AdriansPDFManipulator.app
 
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
