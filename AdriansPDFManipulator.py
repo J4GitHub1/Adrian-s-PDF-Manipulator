@@ -154,6 +154,11 @@ class PDFManipulatorApp:
         self.status_var = StringVar(value="Ready.")
         Label(status_frame, textvariable=self.status_var).pack(anchor="w")
 
+        # --- Copyright ---
+        copyright_frame = Frame(root, padding=8)
+        copyright_frame.pack(fill="x", **pad)
+        Label(copyright_frame, text="© Adrian Brozek", foreground="gray").pack()
+
     def browse_file(self):
         paths = filedialog.askopenfilenames(
             title="Select one or more PDF files",
