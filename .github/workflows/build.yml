@@ -6,6 +6,9 @@ on:
       - 'v*'  # Trigger on version tags like v1.0.0
   workflow_dispatch:  # Allow manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -59,11 +62,27 @@ jobs:
         name: ${{ matrix.artifact_name }}
         path: dist/AdriansPDFManipulator.app
 
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
     - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          dist/*
+          artifacts/**/*
+        body: |
+          ## Downloads
+          - **Windows**: Download `AdriansPDFManipulator.exe`
+          - **macOS**: Download `AdriansPDFManipulator.app` and right-click → Open
+
+          See [README](https://github.com/${{ github.repository }}) for usage instructions.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
